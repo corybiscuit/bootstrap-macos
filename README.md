@@ -99,7 +99,7 @@ The playbook supports local configuration files for easy customization:
 
 ### Customizing Package Lists
 
-Edit `group_vars/macos.yml` or use `config.local.yml` to customize:
+Edit `vars.yml` or use `config.local.yml` to customize:
 
 - **homebrew_packages**: CLI tools and packages
 - **homebrew_casks**: GUI applications
@@ -162,12 +162,12 @@ The playbook automatically detects and handles both:
 bootstrap-macos/
 ├── ansible.cfg              # Ansible configuration
 ├── bootstrap.yml           # Main playbook entry point
+├── vars.yml                # All configuration variables
+├── config.example.yml      # Example local configuration
 ├── Makefile                # Convenient make targets
 ├── requirements.yml        # Ansible Galaxy requirements
 ├── inventory/
 │   └── hosts              # Inventory file for localhost
-├── group_vars/
-│   └── macos.yml          # macOS-specific variables
 ├── playbooks/
 │   ├── bootstrap.yml      # Main bootstrap playbook
 │   └── tasks/
