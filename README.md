@@ -21,8 +21,8 @@ This playbook automates the setup of a fresh macOS system with:
    # Easy installation script (recommended)
    ./install-ansible.sh
    
-   # Or install manually via pip
-   pip3 install ansible
+   # Or install manually via Python 3
+   python3 -m pip install --user ansible
    
    # Or via Homebrew (if you already have it)
    brew install ansible

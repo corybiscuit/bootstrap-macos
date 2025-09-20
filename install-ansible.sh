@@ -26,18 +26,9 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Check if pip3 is available
-if ! command -v pip3 &> /dev/null; then
-    echo "📦 Installing pip3..."
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py --user
-    rm get-pip.py
-    export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
-fi
-
-# Install Ansible
+# Install Ansible using python3 -m pip (pip comes with Python 3.4+)
 echo "📦 Installing Ansible..."
-pip3 install --user ansible
+python3 -m pip install --user ansible
 
 # Add Python user bin to PATH if not already there
 PYTHON_USER_BIN="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin"
