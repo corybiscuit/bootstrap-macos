@@ -12,61 +12,57 @@ install_development_tools: true
 configure_git: true
 
 # Git configuration (customize these)
-git_user_name: ""
-git_user_email: ""
+git_user_name: "corybiscuit"
+git_user_email: "cory@bsct.io"
 
 # Homebrew packages to install
 homebrew_packages:
-  - git
+  - btop
   - curl
-  - wget
-  - jq
-  - tree
-  - htop
-  - vim
-  - tmux
-  - zsh-completions
-  - zsh-syntax-highlighting
-  - node
-  - python@3.11
-  - go
   - docker
   - docker-compose
+  - git
+  - go
+  - htop
+  - jq
+  - node
+  - python3
+  - tree
+  - tmux
+  - wget
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
 
 # Homebrew cask applications to install
 homebrew_casks:
-  - visual-studio-code
-  - google-chrome
+  - alt-tab
+  - betterdisplay
+  - discord
   - firefox
-  - slack
-  - zoom
-  - docker
+  - flux-app
+  - google-chrome
   - iterm2
-  - rectangle
-  - the-unarchiver
-
-# Additional packages that can be installed optionally
-optional_packages:
-  - ripgrep
-  - fd
-  - bat
-  - exa
-  - fzf
-  - gh
-  - ansible-lint
-
-optional_casks:
-  - postman
-  - tableplus
-  - docker
-  - figma
-  - sketch
+  - jump-desktop
+  - keepassxc
+  - keka
+  - obsidian
+  - proton-mail
+  - protonvpn
+  - raycast
+  - shottr
+  - signal
+  - spotify
+  - stats
+  - syncthing-app
+  - visual-studio-code
+  - vlc
+  - zen
 
 # System preferences
 macos_settings:
   # Dock settings
-  dock_autohide: true
-  dock_position: "bottom"
+  dock_autohide: false
+  dock_position: "left"
   dock_tile_size: 48
   
   # Finder settings
