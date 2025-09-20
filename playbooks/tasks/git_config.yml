@@ -1,0 +1,50 @@
+---
+- name: Configure Git settings
+  block:
+    - name: Check if Git user name is configured
+      ansible.builtin.command: git config --global user.name
+      register: git_user_name_check
+      failed_when: false
+      changed_when: false
+
+    - name: Check if Git user email is configured
+      ansible.builtin.command: git config --global user.email
+      register: git_user_email_check
+      failed_when: false
+      changed_when: false
+
+    - name: Set Git user name
+      ansible.builtin.command: git config --global user.name "{{ git_user_name }}"
+      when: 
+        - git_user_name != ""
+        - git_user_name_check.rc != 0 or git_user_name_check.stdout != git_user_name
+
+    - name: Set Git user email
+      ansible.builtin.command: git config --global user.email "{{ git_user_email }}"
+      when: 
+        - git_user_email != ""
+        - git_user_email_check.rc != 0 or git_user_email_check.stdout != git_user_email
+
+    - name: Configure Git settings
+      ansible.builtin.git_config:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        scope: global
+      loop:
+        - { name: "init.defaultBranch", value: "main" }
+        - { name: "push.default", value: "simple" }
+        - { name: "pull.rebase", value: "false" }
+        - { name: "core.autocrlf", value: "input" }
+        - { name: "core.editor", value: "vim" }
+        - { name: "color.ui", value: "auto" }
+        - { name: "diff.tool", value: "vimdiff" }
+        - { name: "merge.tool", value: "vimdiff" }
+
+    - name: Display Git configuration reminder
+      ansible.builtin.debug:
+        msg: |
+          Git configuration completed. If you haven't set your name and email,
+          you can do so by running:
+            git config --global user.name "Your Name"
+            git config --global user.email "your.email@example.com"
+      when: git_user_name == "" or git_user_email == ""

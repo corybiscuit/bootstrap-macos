@@ -1,0 +1,3 @@
+---
+# Main bootstrap playbook for macOS setup
+- import_playbook: playbooks/bootstrap.yml

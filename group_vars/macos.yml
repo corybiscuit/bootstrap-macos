@@ -1,0 +1,50 @@
+---
+# macOS-specific variables
+
+# Homebrew packages to install
+homebrew_packages:
+  - git
+  - curl
+  - wget
+  - jq
+  - tree
+  - htop
+  - vim
+  - tmux
+  - zsh-completions
+  - zsh-syntax-highlighting
+  - node
+  - python@3.11
+  - go
+  - docker
+  - docker-compose
+
+# Homebrew cask applications to install
+homebrew_casks:
+  - visual-studio-code
+  - google-chrome
+  - firefox
+  - slack
+  - zoom
+  - docker
+  - iterm2
+  - rectangle
+  - the-unarchiver
+
+# System preferences
+macos_settings:
+  # Dock settings
+  dock_autohide: true
+  dock_position: "bottom"
+  dock_tile_size: 48
+  
+  # Finder settings
+  finder_show_hidden_files: true
+  finder_show_extensions: true
+  
+  # Trackpad settings
+  trackpad_tap_to_click: true
+  trackpad_three_finger_drag: true
+
+# Shell configuration
+default_shell: /bin/zsh
