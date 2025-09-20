@@ -19,25 +19,40 @@ if ! xcode-select -p &> /dev/null; then
     exit 1
 fi
 
-# Check if Python 3 is available
+# Check if Python 3 is available and install if needed
 if ! command -v python3 &> /dev/null; then
-    echo "❌ Error: Python 3 is required but not installed."
-    echo "Please install Python 3 and try again."
-    exit 1
+    echo "📦 Python 3 not found. Installing the latest stable version..."
+    
+    # Check if Homebrew is available
+    if ! command -v brew &> /dev/null; then
+        echo "📦 Installing Homebrew first..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        
+        # Add Homebrew to PATH for this session
+        if [[ $(uname -m) == "arm64" ]]; then
+            export PATH="/opt/homebrew/bin:$PATH"
+        else
+            export PATH="/usr/local/bin:$PATH"
+        fi
+    fi
+    
+    # Install Python 3 via Homebrew
+    echo "📦 Installing Python 3 via Homebrew..."
+    brew install python3
+    
+    # Verify Python 3 installation
+    if ! command -v python3 &> /dev/null; then
+        echo "❌ Error: Failed to install Python 3."
+        echo "Please install Python 3 manually and try again."
+        exit 1
+    fi
+    
+    echo "✅ Python 3 installed successfully! ($(python3 --version))"
 fi
 
-# Check if pip3 is available
-if ! command -v pip3 &> /dev/null; then
-    echo "📦 Installing pip3..."
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py --user
-    rm get-pip.py
-    export PATH="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin:$PATH"
-fi
-
-# Install Ansible
+# Install Ansible using python3 -m pip (pip comes with Python 3.4+)
 echo "📦 Installing Ansible..."
-pip3 install --user ansible
+python3 -m pip install --user ansible
 
 # Add Python user bin to PATH if not already there
 PYTHON_USER_BIN="$HOME/Library/Python/$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')/bin"
@@ -48,9 +63,9 @@ if [[ ":$PATH:" != *":$PYTHON_USER_BIN:"* ]]; then
 fi
 
 # Verify installation
-if command -v ansible-playbook &> /dev/null; then
+if command -v ansible &> /dev/null; then
     echo "✅ Ansible installed successfully!"
-    echo "📍 Version: $(ansible-playbook --version | head -1)"
+    echo "📍 Version: $(ansible --version | head -1)"
     echo ""
     echo "🎉 You can now run the bootstrap playbook:"
     echo "   make bootstrap"
