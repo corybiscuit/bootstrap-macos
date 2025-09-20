@@ -7,6 +7,9 @@
     ansible_become: false
 
   pre_tasks:
+    - name: Load main variables
+      ansible.builtin.include_vars: ../vars.yml
+
     - name: Load local configuration if it exists
       ansible.builtin.include_vars: "{{ item }}"
       with_first_found:
