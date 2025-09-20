@@ -30,6 +30,7 @@ homebrew_packages:
   - tree
   - tmux
   - wget
+  - zsh
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 
