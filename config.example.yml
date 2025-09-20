@@ -1,7 +1,7 @@
 ---
 # Example configuration file for macOS bootstrap
-# Copy this file to config.local.yml and customize as needed
-# The playbook will automatically load config.local.yml if it exists
+# This file shows available configuration options
+# Edit vars.yml to customize your bootstrap configuration
 
 # Git configuration
 git_user_name: "Your Name"

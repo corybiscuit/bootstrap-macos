@@ -81,25 +81,9 @@ ansible-playbook bootstrap.yml --tags "homebrew,shell" --ask-become-pass
 
 ## Configuration
 
-### Using Configuration Files
+### Customizing Configuration
 
-The playbook supports local configuration files for easy customization:
-
-1. **Copy the example configuration**:
-   ```bash
-   cp config.example.yml config.local.yml
-   ```
-
-2. **Edit your local configuration**:
-   ```bash
-   vim config.local.yml  # or use your preferred editor
-   ```
-
-3. **Customize settings** like Git user info, additional packages, and system preferences.
-
-### Customizing Package Lists
-
-Edit `vars.yml` or use `config.local.yml` to customize:
+All configuration is managed through the `vars.yml` file. Edit this file to customize:
 
 - **homebrew_packages**: CLI tools and packages
 - **homebrew_casks**: GUI applications
@@ -108,17 +92,22 @@ Edit `vars.yml` or use `config.local.yml` to customize:
 - **macos_settings**: System preferences
 - **git_user_name** and **git_user_email**: Git configuration
 
-Example local configuration (`config.local.yml`):
+Example configuration in `vars.yml`:
 ```yaml
 git_user_name: "Your Name"
 git_user_email: "your.email@example.com"
 
-additional_homebrew_packages:
+homebrew_packages:
+  - git
+  - curl
+  - wget
   - ripgrep
   - fd
   - bat
 
-additional_homebrew_casks:
+homebrew_casks:
+  - visual-studio-code
+  - google-chrome
   - postman
   - figma
 
@@ -163,7 +152,6 @@ bootstrap-macos/
 ├── ansible.cfg              # Ansible configuration
 ├── bootstrap.yml           # Main playbook entry point
 ├── vars.yml                # All configuration variables
-├── config.example.yml      # Example local configuration
 ├── Makefile                # Convenient make targets
 ├── requirements.yml        # Ansible Galaxy requirements
 ├── inventory/

@@ -10,14 +10,6 @@
     - name: Load main variables
       ansible.builtin.include_vars: ../vars.yml
 
-    - name: Load local configuration if it exists
-      ansible.builtin.include_vars: "{{ item }}"
-      with_first_found:
-        - files:
-            - config.local.yml
-            - config.yml
-          skip: true
-
     - name: Verify we're running on macOS
       ansible.builtin.fail:
         msg: "This playbook is designed for macOS only"
