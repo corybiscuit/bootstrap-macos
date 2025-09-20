@@ -1,0 +1,32 @@
+---
+# Global variables that apply to all hosts
+
+# User configuration
+configure_dotfiles: false
+dotfiles_repo: ""
+dotfiles_home: "~"
+
+# Development configuration
+install_development_tools: true
+configure_git: true
+
+# Git configuration (customize these)
+git_user_name: ""
+git_user_email: ""
+
+# Additional packages that can be installed optionally
+optional_packages:
+  - ripgrep
+  - fd
+  - bat
+  - exa
+  - fzf
+  - gh
+  - ansible-lint
+
+optional_casks:
+  - postman
+  - tableplus
+  - docker
+  - figma
+  - sketch

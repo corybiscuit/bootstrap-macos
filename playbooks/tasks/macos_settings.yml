@@ -1,0 +1,88 @@
+---
+- name: Configure Dock settings
+  block:
+    - name: Set Dock autohide
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: autohide
+        type: bool
+        value: "{{ macos_settings.dock_autohide }}"
+      notify: Restart Dock
+
+    - name: Set Dock position
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: orientation
+        type: string
+        value: "{{ macos_settings.dock_position }}"
+      notify: Restart Dock
+
+    - name: Set Dock tile size
+      community.general.osx_defaults:
+        domain: com.apple.dock
+        key: tilesize
+        type: int
+        value: "{{ macos_settings.dock_tile_size }}"
+      notify: Restart Dock
+
+- name: Configure Finder settings
+  block:
+    - name: Show hidden files in Finder
+      community.general.osx_defaults:
+        domain: com.apple.finder
+        key: AppleShowAllFiles
+        type: bool
+        value: "{{ macos_settings.finder_show_hidden_files }}"
+      notify: Restart Finder
+
+    - name: Show file extensions in Finder
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: AppleShowAllExtensions
+        type: bool
+        value: "{{ macos_settings.finder_show_extensions }}"
+      notify: Restart Finder
+
+- name: Configure Trackpad settings
+  block:
+    - name: Enable tap to click
+      community.general.osx_defaults:
+        domain: com.apple.driver.AppleBluetoothMultitouch.trackpad
+        key: Clicking
+        type: bool
+        value: "{{ macos_settings.trackpad_tap_to_click }}"
+
+    - name: Enable three finger drag
+      community.general.osx_defaults:
+        domain: com.apple.driver.AppleBluetoothMultitouch.trackpad
+        key: TrackpadThreeFingerDrag
+        type: bool
+        value: "{{ macos_settings.trackpad_three_finger_drag }}"
+
+- name: Disable automatic spelling correction
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: NSAutomaticSpellingCorrectionEnabled
+    type: bool
+    value: false
+
+- name: Disable automatic capitalization
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: NSAutomaticCapitalizationEnabled
+    type: bool
+    value: false
+
+- name: Set fast key repeat rate
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: KeyRepeat
+    type: int
+    value: 2
+
+- name: Set short delay until key repeat
+  community.general.osx_defaults:
+    domain: NSGlobalDomain
+    key: InitialKeyRepeat
+    type: int
+    value: 15

@@ -1,0 +1,87 @@
+---
+- name: Ensure zsh is the default shell
+  ansible.builtin.user:
+    name: "{{ current_user }}"
+    shell: "{{ default_shell }}"
+  become: true
+
+- name: Create .zshrc if it doesn't exist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    state: touch
+    mode: '0644'
+  changed_when: false
+
+- name: Configure zsh with useful aliases
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - ALIASES"
+    block: |
+      # Useful aliases
+      alias ll='ls -alF'
+      alias la='ls -A'
+      alias l='ls -CF'
+      alias grep='grep --color=auto'
+      alias fgrep='fgrep --color=auto'
+      alias egrep='egrep --color=auto'
+      alias ..='cd ..'
+      alias ...='cd ../..'
+      alias ....='cd ../../..'
+      alias tree='tree -C'
+      alias h='history'
+      alias c='clear'
+
+- name: Configure zsh with Homebrew integration
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - HOMEBREW"
+    block: |
+      # Homebrew integration
+      if [[ -f "/opt/homebrew/bin/brew" ]]; then
+          eval "$(/opt/homebrew/bin/brew shellenv)"
+      elif [[ -f "/usr/local/bin/brew" ]]; then
+          eval "$(/usr/local/bin/brew shellenv)"
+      fi
+
+- name: Enable zsh syntax highlighting
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - SYNTAX HIGHLIGHTING"
+    block: |
+      # Enable syntax highlighting
+      if [[ -f "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+          source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+      fi
+
+- name: Enable zsh autocompletion
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - AUTOCOMPLETIONS"
+    block: |
+      # Enable autocompletions
+      autoload -Uz compinit
+      compinit
+      
+      # Add Homebrew completions
+      if type brew &>/dev/null; then
+        FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+        autoload -Uz compinit
+        compinit
+      fi
+
+- name: Set up useful environment variables
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_env.HOME }}/.zshrc"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - ENVIRONMENT"
+    block: |
+      # Environment variables
+      export EDITOR=vim
+      export PAGER=less
+      export LESS='-R'
+      export HISTSIZE=10000
+      export SAVEHIST=10000
+      export HISTFILE=~/.zsh_history
+      
+      # Homebrew
+      export HOMEBREW_NO_ANALYTICS=1
+      export HOMEBREW_NO_AUTO_UPDATE=1

@@ -1,0 +1,121 @@
+---
+- name: Bootstrap macOS Machine
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    ansible_become: false
+
+  pre_tasks:
+    - name: Load local configuration if it exists
+      ansible.builtin.include_vars: "{{ item }}"
+      with_first_found:
+        - files:
+            - config.local.yml
+            - config.yml
+          skip: true
+
+    - name: Verify we're running on macOS
+      ansible.builtin.fail:
+        msg: "This playbook is designed for macOS only"
+      when: ansible_os_family != "Darwin"
+
+    - name: Get current user
+      ansible.builtin.set_fact:
+        current_user: "{{ ansible_user_id }}"
+
+    - name: Combine package lists
+      ansible.builtin.set_fact:
+        combined_homebrew_packages: "{{ homebrew_packages + (additional_homebrew_packages | default([])) }}"
+        combined_homebrew_casks: "{{ homebrew_casks + (additional_homebrew_casks | default([])) }}"
+
+  tasks:
+    - name: Install Homebrew
+      ansible.builtin.shell: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /opt/homebrew/bin/brew
+      when: ansible_architecture == "arm64"
+
+    - name: Install Homebrew (Intel)
+      ansible.builtin.shell: |
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      args:
+        creates: /usr/local/bin/brew
+      when: ansible_architecture == "x86_64"
+
+    - name: Add Homebrew to PATH for Apple Silicon
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zprofile"
+        line: 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+        create: true
+        state: present
+      when: ansible_architecture == "arm64"
+
+    - name: Add Homebrew to PATH for Intel
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_env.HOME }}/.zprofile"
+        line: 'eval "$(/usr/local/bin/brew shellenv)"'
+        create: true
+        state: present
+      when: ansible_architecture == "x86_64"
+
+    - name: Set Homebrew binary path
+      ansible.builtin.set_fact:
+        homebrew_bin: "{{ '/opt/homebrew/bin/brew' if ansible_architecture == 'arm64' else '/usr/local/bin/brew' }}"
+
+    - name: Update Homebrew
+      community.general.homebrew:
+        update_homebrew: true
+        upgrade_all: true
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ homebrew_bin | dirname }}"
+
+    - name: Install Homebrew packages
+      community.general.homebrew:
+        name: "{{ combined_homebrew_packages }}"
+        state: present
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ homebrew_bin | dirname }}"
+
+    - name: Install Homebrew cask applications
+      community.general.homebrew_cask:
+        name: "{{ combined_homebrew_casks }}"
+        state: present
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ homebrew_bin | dirname }}"
+
+    - name: Configure macOS system preferences
+      include_tasks: tasks/macos_settings.yml
+
+    - name: Setup shell configuration
+      include_tasks: tasks/shell_config.yml
+
+    - name: Configure Git
+      include_tasks: tasks/git_config.yml
+      when: configure_git | default(true)
+
+    - name: Install optional packages
+      community.general.homebrew:
+        name: "{{ optional_packages }}"
+        state: present
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ homebrew_bin | dirname }}"
+      when: optional_packages is defined and optional_packages | length > 0
+
+    - name: Install optional cask applications
+      community.general.homebrew_cask:
+        name: "{{ optional_casks }}"
+        state: present
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ homebrew_bin | dirname }}"
+      when: optional_casks is defined and optional_casks | length > 0
+
+  handlers:
+    - name: Restart Dock
+      ansible.builtin.command: killall Dock
+      ignore_errors: true
+
+    - name: Restart Finder
+      ansible.builtin.command: killall Finder
+      ignore_errors: true
