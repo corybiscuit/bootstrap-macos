@@ -56,17 +56,11 @@
 - name: Enable zsh autocompletion
   ansible.builtin.blockinfile:
     path: "{{ ansible_env.HOME }}/.zshrc"
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - AUTOCOMPLETIONS"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK - AUTOSUGGESTIONS"
     block: |
-      # Enable autocompletions
-      autoload -Uz compinit
-      compinit
-      
-      # Add Homebrew completions
-      if type brew &>/dev/null; then
-        FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
-        autoload -Uz compinit
-        compinit
+      # Enable autosuggestions
+      if [[ -f "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
+          source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
       fi
 
 - name: Set up useful environment variables
