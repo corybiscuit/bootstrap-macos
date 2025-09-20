@@ -63,9 +63,9 @@ if [[ ":$PATH:" != *":$PYTHON_USER_BIN:"* ]]; then
 fi
 
 # Verify installation
-if command -v ansible-playbook &> /dev/null; then
+if command -v ansible &> /dev/null; then
     echo "✅ Ansible installed successfully!"
-    echo "📍 Version: $(ansible-playbook --version | head -1)"
+    echo "📍 Version: $(ansible --version | head -1)"
     echo ""
     echo "🎉 You can now run the bootstrap playbook:"
     echo "   make bootstrap"
