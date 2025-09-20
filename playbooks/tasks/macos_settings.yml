@@ -59,6 +59,15 @@
         type: bool
         value: "{{ macos_settings.trackpad_three_finger_drag }}"
 
+- name: Configure Mouse settings
+  block:
+    - name: Disable natural scrolling
+      community.general.osx_defaults:
+        domain: NSGlobalDomain
+        key: com.apple.swipescrolldirection
+        type: bool
+        value: "{{ macos_settings.mouse_natural_scrolling }}"
+
 - name: Disable automatic spelling correction
   community.general.osx_defaults:
     domain: NSGlobalDomain

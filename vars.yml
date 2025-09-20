@@ -73,5 +73,8 @@ macos_settings:
   trackpad_tap_to_click: true
   trackpad_three_finger_drag: true
 
+  # Mouse settings
+  mouse_natural_scrolling: false
+
 # Shell configuration
 default_shell: /bin/zsh
