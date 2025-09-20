@@ -19,11 +19,35 @@ if ! xcode-select -p &> /dev/null; then
     exit 1
 fi
 
-# Check if Python 3 is available
+# Check if Python 3 is available and install if needed
 if ! command -v python3 &> /dev/null; then
-    echo "❌ Error: Python 3 is required but not installed."
-    echo "Please install Python 3 and try again."
-    exit 1
+    echo "📦 Python 3 not found. Installing the latest stable version..."
+    
+    # Check if Homebrew is available
+    if ! command -v brew &> /dev/null; then
+        echo "📦 Installing Homebrew first..."
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        
+        # Add Homebrew to PATH for this session
+        if [[ $(uname -m) == "arm64" ]]; then
+            export PATH="/opt/homebrew/bin:$PATH"
+        else
+            export PATH="/usr/local/bin:$PATH"
+        fi
+    fi
+    
+    # Install Python 3 via Homebrew
+    echo "📦 Installing Python 3 via Homebrew..."
+    brew install python3
+    
+    # Verify Python 3 installation
+    if ! command -v python3 &> /dev/null; then
+        echo "❌ Error: Failed to install Python 3."
+        echo "Please install Python 3 manually and try again."
+        exit 1
+    fi
+    
+    echo "✅ Python 3 installed successfully! ($(python3 --version))"
 fi
 
 # Install Ansible using python3 -m pip (pip comes with Python 3.4+)
